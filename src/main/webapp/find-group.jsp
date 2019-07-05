@@ -107,10 +107,8 @@ Connection conn;
             <div style="height: 2px; background-color: white; width: 15%; margin: 25px auto;"></div>
 
             <form align = center>
+
                 <%
-
-
-
                 TreeMap<String, Integer> results = (TreeMap<String, Integer>) request.getAttribute("findresults");
 
                 if (results.size() == 0) {
@@ -123,12 +121,29 @@ Connection conn;
 
                    for (String key: results.keySet()) {
 
+                   int members = 0;
+                   int sizeofgroup = 0;
+                   String desc = "";
+
+                    String groupquery = "SELECT * FROM open_project_db.groups WHERE id = \"" + Integer.toString(results.get(key)) + "\"\n";
+
+                         try (ResultSet mrs = conn.prepareStatement(groupquery).executeQuery()){
+                                if (mrs.next()) {
+                                  members = mrs.getInt("size");
+                                  sizeofgroup = mrs.getInt("max_size");
+                                  desc = mrs.getString("description");
+                                }
+
+                           } catch (SQLException e) {
+                                  throw new ServletException("SQL error", e);
+                         }
+
                      String id = Integer.toString(results.get(key));
 
                      String link = key.replaceAll("\\s","");
 
                 %>
-                    <a href="/grouppage.jsp?group=<%=link%>&id=<%=id%>&userid=<%=userid%>"> <button type="button" class="btn btn-primary" style="height:200px;width:200px" align = "center"> <%=key%> <br> </button> </a>
+                    <a href="/grouppage.jsp?group=<%=link%>&id=<%=id%>&userid=<%=userid%>"> <button type="button" class="btn btn-primary" style="height:200px;width:300px" align = "center"> <h3 style="font-size:20px;"><%=key%></h3> <br> <p style = "font-size:15px;"><%=members%> members / limit <%=sizeofgroup%> </p> <br> <p style = "font-size:12px;"> <%=desc%> </p> </button> </a>
                     <br><br>
                 <%
                     }

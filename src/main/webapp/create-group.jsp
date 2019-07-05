@@ -163,6 +163,25 @@ Connection conn;
                                        required>
                             </div>
 
+                            <div class="form-label-group">
+                                <input id="description" name="description"class="form-control" maxlength="50" placeholder="Short Description (meeting time, etc)" autocomplete = "off"
+                                       autofocus>
+                            </div>
+
+                            <br>
+
+                            <div class="form-label-group">
+
+
+                                    <input type="radio" id="style" name="style" value="0" required> Virtual Group (Work together only online) </br>
+                                    <input type="radio" id="style" name="style" value="1" required> Hybrid Group (Work together online and in-person) </br>
+
+
+                            </div>
+
+                            <br>
+
+
                             <input type="hidden" id="school" name="school" value="<%=school%>" >
                             <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
 

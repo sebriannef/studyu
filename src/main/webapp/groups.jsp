@@ -119,6 +119,17 @@ limitations under the License.
 
                         <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
 
+                        <br>
+
+                        <div class="form-label-group">
+
+                            <input type="radio" id="style" name="style" value="0" required> Virtual Group (Work together only online) </br>
+                            <input type="radio" id="style" name="style" value="1" required> Hybrid Group (Work together online and in-person) </br>
+
+                        </div>
+
+                        <br>
+
                         <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">Find groups!</button>
                         <hr class="my-4">
 
