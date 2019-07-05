@@ -32,6 +32,7 @@ limitations under the License.
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!--<meta http-equiv="refresh" content="5" >-->
     <title> Group Page | StudyU: Study Group Finder </title>
     <link rel="stylesheet" href="/css/main.css">
 
@@ -62,6 +63,13 @@ limitations under the License.
       xhttp.open("GET", "JoinGroupServlet.java", true);
       xhttp.send();
     }
+
+    setInterval("my_function();",5000);
+    function my_function(){
+      $('#blah').load(location.href + " #blah");
+    }
+
+
     </script>
 
     <style>
@@ -339,8 +347,10 @@ limitations under the License.
               else { //the user already belongs to this
           %>
 
-          <div class="w3-container">
-            <h2 align = "center"> <%=groupformalname%></h2>
+          <div id ="blah" class="w3-container">
+             <a href = "/group_settings.jsp?userid=<%=userid%>&groupid=<%=groupid%>" style = "font-size:40px;text-align:center;"><h1 id = "forml"> <%=groupformalname%></h1></a>
+
+
             <div align = "center">
                 <h3 id = "myBtn" align = "center" style="font-size:16px"> <%=groupsize%> Members </h3>
             </div>

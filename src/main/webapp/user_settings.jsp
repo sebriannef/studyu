@@ -121,7 +121,7 @@ limitations under the License.
             }
 
     %>
-    <h1 align="center"> Settings </h1>
+    <h1 align="center"> User Settings </h1>
     <br><br>
 
     <div class="form-container" align="center" style="height:50%;">
