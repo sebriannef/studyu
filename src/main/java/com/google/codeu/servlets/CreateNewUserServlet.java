@@ -50,6 +50,14 @@ public class CreateNewUserServlet extends HttpServlet {
     String mfirst = request.getParameter("mfname");
     String mlast = request.getParameter("mlname");
     String mphone = request.getParameter("mphone");
+
+    //first need to check to see if the phone number they entered is actually a number
+    //if it is not, then you have them re-enter their info
+    String regex = "\\d+";
+    if (!mphone.matches(regex)){
+      resp.sendRedirect("/index.html");
+    }
+
     String muni = request.getParameter("muni");
     String memail = request.getParameter("inputEmail");
     String mpassword = request.getParameter("inputPassword");

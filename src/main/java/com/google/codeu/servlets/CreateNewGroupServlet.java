@@ -65,12 +65,16 @@ public class CreateNewGroupServlet extends HttpServlet {
         String school = req.getParameter("school");
         String professor = req.getParameter("professor").toLowerCase();
 
+        String styler = req.getParameter("style");
+        String description = req.getParameter("description");
+
         int number = Integer.parseInt(req.getParameter("number"));
+        int style = Integer.parseInt(styler);
         int groupid = countGroups();
 
-        String query = "INSERT INTO open_project_db.groups VALUES (" + groupid +
-                ", \"" + name + "\", \"" + course + "\", " +
-                1 + ", " + number + ", \"" + professor + "\", \"" + school + "\")\n";
+        String query = "INSERT INTO open_project_db.groups (id, name, course, size, max_size, professor, school, style, description) VALUES (" + groupid
+                + ", \"" + name + "\", \"" + course + "\", " +
+                1 + ", " + number + ", \"" + professor + "\", \"" + school + "\", " + style + ", \"" + description+  "\");\n";
 
         PreparedStatement statement = null;
         try {
