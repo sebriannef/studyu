@@ -38,6 +38,7 @@ public class FindGroupsServlet extends HttpServlet {
         String school = "";
         String userid = request.getParameter("userid");
         String findschool = "SELECT * FROM open_project_db.users WHERE id = \"" + userid + "\"\n";
+        int style = Integer.parseInt(request.getParameter("style"));
 
         try (ResultSet rs = this.conn.prepareStatement(findschool).executeQuery()){
 
@@ -60,7 +61,9 @@ public class FindGroupsServlet extends HttpServlet {
                 while(rs.next()) {
                     this.log("\n \n \n \n there is stuff");
                     if (rs.getString("school").equals(school) && rs.getInt("size") < rs.getInt("max_size")) {
-                        results.put(rs.getString("name"), rs.getInt("id"));
+                        if (rs.getInt("style") == style) {
+                            results.put(rs.getString("name"), rs.getInt("id"));
+                        }
                     }
                 }
 
