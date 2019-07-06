@@ -25,6 +25,7 @@ limitations under the License.
 <%@page import="java.sql.DriverManager"%>
 <%@page import="java.sql.ResultSet"%>
 <%@page import="java.sql.SQLException"%>
+<%@page import="java.sql.Blob"%>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +67,7 @@ limitations under the License.
 
     setInterval("my_function();",5000);
     function my_function(){
-      $('#blah').load(location.href + " #blah");
+      $('#msgbox').load(location.href + " #innerd");
     }
 
 
@@ -237,6 +238,8 @@ limitations under the License.
                         throw new ServletException("Unable to connect to Cloud SQL", e);
                     }
     String userid = request.getParameter("userid");
+    String groupid = request.getParameter("id");
+                    String thegroup = request.getParameter("group");
      String loggedin = "SELECT * FROM open_project_db.users WHERE id = \"" + userid + "\"\n";
 
      try (ResultSet rs = conn.prepareStatement(loggedin).executeQuery()){
@@ -263,10 +266,10 @@ limitations under the License.
         <ul class="nav justify-content-end" id="navigation">
             <li class="nav-item dropdown">
                <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="" role="button" aria-haspopup="true"
-               aria-expanded="false">Groups</a>
+               aria-expanded="false">Menu</a>
                <div class="dropdown-menu">
-                   <a class="dropdown-item" href="/create-group.jsp?userid=<%=userid%>">Create a Group</a>
-                   <a class="dropdown-item" href="/groups.jsp?userid=<%=userid%>">Find a Group</a>
+                   <a class = "dropdown-item" href = "/group_resources.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Resources </a>
+
                </div>
             </li>
             <li class="nav-item">
@@ -283,8 +286,7 @@ limitations under the License.
     <%
 
 
-                String groupid = request.getParameter("id");
-                String thegroup = request.getParameter("group");
+
 
                 //trying
                 request.setAttribute("groupid", groupid);
@@ -452,34 +454,13 @@ limitations under the License.
                             }
                             </script>
 
-            <div align = "center">
-
-                <form action = "/gotores" method = align = "center" post target="_self" style="float:left;">
-                    <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                    <input type="hidden" id="groupid" name="groupid" value="<%=groupid%>" >
-                    <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
-                    <div align = "center">
-                        <button type="submit" class="btn btn-primary" style="height:10%;width:130px"> Resources </button>
-                    </div>
-                </form>
-                &nbsp
-                &nbsp
-                            <form action = "/leavegroup" align = "center" method = post target="_self" style="float:left;">
-                                <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                                <input type="hidden" id="groupid" name="groupid" value="<%=groupid%>" >
-                                <input type="hidden" id="groupsize" name="groupsize" value="<%=groupsize%>" >
-                                <div align = "center">
-                                    <button type="submit" class="btn btn-primary" style="height:10%;width:130px;background-color:red;"> Leave Group </button>
-                                </div>
-                            </form>
-
-             </div>
-
 
             <div class="w3-panel" style = "width:50%;height:80%;padding-left:0px;">
                <form action = "/sendmsg" method=post target="_self">
 
-                    <div id = "msgbox" class = "w3-panel" style="text-align:center;height:50%;width:90%;overflow-y:scroll;overflow-x:hidden;position:fixed;display:flex;flex-direction:column-reverse;">
+                    <div id = "msgbox" class = "w3-panel" style="text-align:center;height:60%;width:90%;overflow-y:scroll;overflow-x:hidden;position:fixed;display:flex;flex-direction:column-reverse;">
+
+                       <div id = "innerd">
                        <div>
                         <%
 
@@ -490,7 +471,10 @@ limitations under the License.
 
                                 while (resultset.next()) {
 
-                                    String msg = resultset.getString("message");
+                                    Blob blob = resultset.getBlob("message");
+                                    byte[] bdata = blob.getBytes(1, (int) blob.length());
+
+                                    String msg = new String(bdata, "UTF-8");
                                     String sender = Integer.toString(resultset.getInt("user_id"));
 
 
@@ -563,6 +547,8 @@ limitations under the License.
                             }
 
                         %>
+                      </div>
+
                       </div>
                     </div>
                     <div style = "text-align:left;">
