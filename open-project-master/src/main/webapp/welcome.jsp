@@ -220,7 +220,8 @@ limitations under the License.
                 if (thegroups.size() == 0) {
              %>
                     <h1 class="primary-heading" style="color:red;margin-bottom: 0px !important" align="center"> Uh Oh! You are not in any groups yet! </h1>
-                    <h2 align="center"> Click on GROUPS to find or create a group </h2>
+
+                    <h2 align="center" style="color:white;"> Click on GROUPS to find or create a group </h2>
              <%
                 }
 
