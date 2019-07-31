@@ -34,6 +34,7 @@ limitations under the License.
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title> Home | StudyU: Study Group Finder</title>
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="shortcut icon" type = "image/png" href = "img/favicon.png">
 
     <!-- jQuery CDN Link -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -42,6 +43,7 @@ limitations under the License.
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="/js/check_browser_close.js"></script>
 
     <!-- Font Awesome Icons link -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
@@ -59,7 +61,8 @@ limitations under the License.
                         </style>
 </head>
 
-<body onload="addLoginOrLogoutLinkToNavigation();" style="background-color:#056691">
+
+<body style="background-color:#056691">
 
     <% String userid = request.getParameter("userid"); %>
 <!-- Navigation menu component -->
@@ -113,7 +116,7 @@ limitations under the License.
                 username = rs.getString("first_name");
                     //check to see if the user is actually logged in
                     //if theyre not, then take them to the login page
-                   if (rs.getString("loggedin").equals("0")) {
+                   if (rs.getString("loggedin").equals("0") || !(rs.getString("ip").equals(request.getRemoteAddr()))) {
                     %>
                         <jsp:forward page="/oops"/>
                     <%
@@ -172,6 +175,8 @@ limitations under the License.
 
             <h2 class="primary-heading" style="color:white;margin-bottom: 0px !important" align="center"> Your Groups </h2>
             <div style="height: 2px; background-color: white; width: 15%; margin: 25px auto;"></div>
+
+
             <form align = center>
                 <%
 
