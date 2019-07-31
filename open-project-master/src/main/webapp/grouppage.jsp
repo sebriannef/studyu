@@ -36,7 +36,9 @@ limitations under the License.
     <!--<meta http-equiv="refresh" content="5" >-->
     <title> Group Page | StudyU: Study Group Finder </title>
     <link rel="stylesheet" href="/css/main.css">
+
     <link rel="shortcut icon" type = "image/png" href = "img/favicon.png">
+
 
     <!-- jQuery CDN Link -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -269,7 +271,11 @@ limitations under the License.
 
      try (ResultSet rs = conn.prepareStatement(loggedin).executeQuery()){
         if(rs.next()) {
+
           if (rs.getString("loggedin").equals("0") || !(rs.getString("ip").equals(request.getRemoteAddr()))) {
+
+          if (rs.getString("loggedin").equals("0")) {
+
            %>
                  <jsp:forward page="/oops"/>
            <%
@@ -355,7 +361,11 @@ limitations under the License.
                    <%
                    if (grstyle == 1) {
                    %>
+
                         <a class = "dropdown-item" href = "/meetings.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
+
+                        <a class = "dropdown-item" href = "/schedule_meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
+
                    <%
                     }
                    %>

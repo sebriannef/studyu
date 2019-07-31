@@ -51,7 +51,6 @@ public class CreateNewUserServlet extends HttpServlet {
     String mlast = request.getParameter("mlname");
     String mphone = request.getParameter("mphone");
 
-
     String muni = request.getParameter("muni");
     String memail = request.getParameter("inputEmail");
     String mpassword = request.getParameter("inputPassword");

@@ -34,7 +34,9 @@ limitations under the License.
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title> Results | StudyU: Study Group Finder </title>
     <link rel="stylesheet" href="/css/main.css">
+
     <link rel="shortcut icon" type = "image/png" href = "img/favicon.png">
+
 
     <!-- jQuery CDN Link -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -73,7 +75,11 @@ Connection conn;
 
      try (ResultSet rs = conn.prepareStatement(loggedin).executeQuery()){
             if (rs.next()) {
+
               if (rs.getString("loggedin").equals("0") || !(rs.getString("ip").equals(request.getRemoteAddr()))) {
+
+              if (rs.getString("loggedin").equals("0")) {
+
                %>
                      <jsp:forward page="/oops"/>
                <%
