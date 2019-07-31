@@ -36,6 +36,9 @@ limitations under the License.
     <title> Group Resources | StudyU: Study Group Finder </title>
     <link rel="stylesheet" href="/css/main.css">
 
+    <link rel="shortcut icon" type = "image/png" href = "img/favicon.png">
+
+
     <!-- jQuery CDN Link -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
@@ -159,7 +162,11 @@ limitations under the License.
 
          try (ResultSet l = conn.prepareStatement(loggedin).executeQuery()){
             if (l.next()) {
+
+              if (l.getString("loggedin").equals("0") || !(l.getString("ip").equals(request.getRemoteAddr()))) {
+
               if (l.getString("loggedin").equals("0")) {
+
                %>
                      <jsp:forward page="/oops"/>
                <%

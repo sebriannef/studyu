@@ -33,6 +33,7 @@ limitations under the License.
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title> Settings | StudyU: Study Group Finder</title>
     <link rel="stylesheet" href="/css/main.css">
+    <link rel="shortcut icon" type = "image/png" href = "img/favicon.png">
 
     <!-- jQuery CDN Link -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -112,7 +113,7 @@ limitations under the License.
                 while (rs.next()) {
                 //check to see if the user is actually logged in
                 //if theyre not, then take them to the login page
-               if (rs.getString("loggedin").equals("0")) {
+               if (rs.getString("loggedin").equals("0") || !(rs.getString("ip").equals(request.getRemoteAddr()))) {
                 %>
                     <jsp:forward page="/oops"/>
                 <%
