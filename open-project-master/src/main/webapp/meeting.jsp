@@ -235,7 +235,7 @@ limitations under the License.
 
 %>
 
-<body onload="buildUI();" style="background-color:#056691">
+<body onload="buildUI();" style="background-color:#056691;font-family: 'Comfortaa', cursive;">
     <!-- Navigation menu component -->
     <nav>
         <!-- Bootstrap nav menu template -->
@@ -245,6 +245,8 @@ limitations under the License.
                 aria-expanded="false">Menu</a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="/grouppage.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>">Group Chat</a>
+
+                    <a class = "dropdown-item" href = "/group_resources.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Resources </a>
                     <%
                    if (admin) {
                    %>
@@ -256,7 +258,7 @@ limitations under the License.
                     <%
                        if (grstyle == 1) {
                     %>
-                        <a class = "dropdown-item" href = "/schedule_meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
+                        <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
                     <%
                         }
                     %>
@@ -273,8 +275,8 @@ limitations under the License.
     </nav>
     <!-- End of navigation menu component -->
 
-            <h1 align = "center" style = "color:#eae672;"> <%=groupformalname%></h1>
-            <h2 align = "center" style = "color:#eae672;"> Group Meetings </h2>
+            <h1 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> <%=groupformalname%></h1>
+            <h2 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> Group Meetings </h2>
 
              <div align = "center">
                 <button id = "myBtn" class="btn btn-primary" style="height:100%;width:200px;border:none;"> Schedule a New Meeting </button>
@@ -284,123 +286,69 @@ limitations under the License.
                 <div id="myModal" class="modal">
 
                   <!-- Modal content -->
-                  <div class="modal-content">
+                  <div class="modal-content" align = "center">
                     <span class="close">&times;</span>
 
-                    <form id="regForm" action="/#">
-                      <h1>Register:</h1>
-                      <!-- One "tab" for each step in the form: -->
-                      <div class="tab">What days are you available this week?
-                        <form id = "choosedays" action = "/#" method = "post" target="_self">
-                            <input type="checkbox" name="sunday" value="Sunday"> Sunday <br>
-                            <input type="checkbox" name="monday" value="Monday"> Monday <br>
-                            <input type="checkbox" name="tuesday" value="Tuesday"> Tuesday <br>
-                            <input type="checkbox" name="wednesday" value="Wednesday"> Wednesday <br>
-                            <input type="checkbox" name="thursday" value="Thursday"> Thursday <br>
-                            <input type="checkbox" name="friday" value="Friday"> Friday <br>
-                            <input type="checkbox" name="saturday" value="Saturday"> Saturday <br>
-                            <button type="submit" class="btn btn-primary" style="height:50px;width:15%;background-color:#0892d0"> Submit </button>
+                        <h3 style = "font-family: 'Comfortaa', cursive;"> What Days/Times Work? </h3>
+
+
+                        <form>
+
+                        <div align = left>
+
+                                <input type="checkbox" onchange="document.getElementById('montime').disabled = !this.checked" id = "mon" name = "mon" value = "mon"> Monday <br>
+                                <form action = "/#" method = "POST" target = "_self">
+                                    <input type="time" id="montime" name="montime" min="9:00" max="18:00" disabled = "disabled"> <button type="submit" class="btn btn-primary"> Add Time </button>
+                                </form>
+                                <br>
+
+                                <input type="checkbox" onchange="document.getElementById('tuestime').disabled = !this.checked" id = "tues" name = "tues" value = "tues"> Tuesday <br>
+                                <form action = "/#" method = "POST" target = "_self">
+                                    <input type="time" id="tuestime" name="tuestime" min="9:00" max="18:00" disabled = "disabled"> <button type="submit" class="btn btn-primary">  Add Time </button>
+                                </form>
+                                <br>
+
+                                <input type="checkbox" onchange="document.getElementById('wedtime').disabled = !this.checked" id = "wed" name = "wed" value = "wed"> Wednesday <br>
+                                <form action = "/#" method = "POST" target = "_self">
+                                    <input type="time" id="wedtime" name="wedtime" min="9:00" max="18:00" disabled = "disabled"> <button type="submit" class="btn btn-primary">  Add Time </button>
+                                </form>
+                                <br>
+
+                                <input type="checkbox" onchange="document.getElementById('thurstime').disabled = !this.checked" id = "thurs" name = "thurs" value = "thurs"> Thursday <br>
+                                <form action = "/#" method = "POST" target = "_self">
+                                    <input type="time" id="thurstime" name="thurstime" min="9:00" max="18:00" disabled = "disabled"> <button type="submit" class="btn btn-primary">  Add Time </button>
+                                </form>
+                                <br>
+
+                                <input type="checkbox" onchange="document.getElementById('fritime').disabled = !this.checked" id = "fri" name = "fri" value = "fri"> Friday <br>
+                                <form action = "/#" method = "POST" target = "_self">
+                                    <input type="time" id="fritime" name="fritime" min="9:00" max="18:00" disabled = "disabled"> <button type="submit" class="btn btn-primary"> Add Time </button>
+                                </form>
+                                <br>
+
+                                <input type="checkbox" onchange="document.getElementById('sattime').disabled = !this.checked" id = "sat" name = "sat" value = "sat"> Saturday <br>
+                                <form action = "/#" method = "POST" target = "_self">
+                                    <input type="time" id="sattime" name="sattime" min="9:00" max="18:00" disabled = "disabled"> <button type="submit" class="btn btn-primary">  Add Time </button>
+                                </form>
+                                <br>
+
+                                <input type="checkbox" onchange="document.getElementById('suntime').disabled = !this.checked" id = "sun" name = "sun" value = "sun"> Sunday <br>
+                                <form action = "/#" method = "POST" target = "_self">
+                                    <input type="time" id="suntime" name="suntime" min="9:00" max="18:00" disabled = "disabled"> <button type="submit" class="btn btn-primary"> Add Time </button>
+                                </form>
+                                <br>
+
+                          </div>
+
+                           <form action = "/#" method = "POST" target = "_self">
+                                <input placeholder="brief agenda for the meeting" id="type" name="type" type="text" autocomplete="off" style="height:50px;width:75%;border:1px solid #F7730E;border-radius: 5px;padding-left:20px;">
+
+                                <button type="submit" class="btn btn-primary">  Submit </button>
+
+                           </form>
+
                         </form>
 
-                      </div>
-
-                      <div class="tab">When Would You Like Group Members to RSVP by?
-                        <p><input placeholder="dd" oninput="this.className = ''" name="dd"></p>
-                        <p><input placeholder="mm" oninput="this.className = ''" name="nn"></p>
-                        <p><input placeholder="yyyy" oninput="this.className = ''" name="yyyy"></p>
-                      </div>
-                      <div class="tab">Agenda for the meeting:
-                        <p><input placeholder="Username..." oninput="this.className = ''" name="uname"></p>
-                      </div>
-                      <div style="overflow:auto;">
-                        <div style="float:right;">
-                          <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-                          <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
-                        </div>
-                      </div>
-                      <!-- Circles which indicates the steps of the form: -->
-                      <div style="text-align:center;margin-top:40px;">
-                        <span class="step"></span>
-                        <span class="step"></span>
-                        <span class="step"></span>
-                        <span class="step"></span>
-                      </div>
-                    </form>
-
-                    <script>
-                    var currentTab = 0; // Current tab is set to be the first tab (0)
-                    showTab(currentTab); // Display the current tab
-
-                    function showTab(n) {
-                      // This function will display the specified tab of the form...
-                      var x = document.getElementsByClassName("tab");
-                      x[n].style.display = "block";
-                      //... and fix the Previous/Next buttons:
-                      if (n == 0) {
-                        document.getElementById("prevBtn").style.display = "none";
-                      } else {
-                        document.getElementById("prevBtn").style.display = "inline";
-                      }
-                      if (n == (x.length - 1)) {
-                        document.getElementById("nextBtn").innerHTML = "Submit";
-                      } else {
-                        document.getElementById("nextBtn").innerHTML = "Next";
-                      }
-                      //... and run a function that will display the correct step indicator:
-                      fixStepIndicator(n)
-                    }
-
-                    function nextPrev(n) {
-                      // This function will figure out which tab to display
-                      var x = document.getElementsByClassName("tab");
-                      // Exit the function if any field in the current tab is invalid:
-                      if (n == 1 && !validateForm()) return false;
-                      // Hide the current tab:
-                      x[currentTab].style.display = "none";
-                      // Increase or decrease the current tab by 1:
-                      currentTab = currentTab + n;
-                      // if you have reached the end of the form...
-                      if (currentTab >= x.length) {
-                        // ... the form gets submitted:
-                        document.getElementById("regForm").submit();
-                        return false;
-                      }
-                      // Otherwise, display the correct tab:
-                      showTab(currentTab);
-                    }
-
-                    function validateForm() {
-                      // This function deals with validation of the form fields
-                      var x, y, i, valid = true;
-                      x = document.getElementsByClassName("tab");
-                      y = x[currentTab].getElementsByTagName("input");
-                      // A loop that checks every input field in the current tab:
-                      for (i = 0; i < y.length; i++) {
-                        // If a field is empty...
-                        if (y[i].value == "") {
-                          // add an "invalid" class to the field:
-                          y[i].className += " invalid";
-                          // and set the current valid status to false
-                          valid = false;
-                        }
-                      }
-                      // If the valid status is true, mark the step as finished and valid:
-                      if (valid) {
-                        document.getElementsByClassName("step")[currentTab].className += " finish";
-                      }
-                      return valid; // return the valid status
-                    }
-
-                    function fixStepIndicator(n) {
-                      // This function removes the "active" class of all steps...
-                      var i, x = document.getElementsByClassName("step");
-                      for (i = 0; i < x.length; i++) {
-                        x[i].className = x[i].className.replace(" active", "");
-                      }
-                      //... and adds the "active" class on the current step:
-                      x[n].className += " active";
-                    }
-                    </script>
 
 
                   </div>
