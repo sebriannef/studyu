@@ -61,13 +61,58 @@ limitations under the License.
                                 font-family: 'Comfortaa', cursive;
                             }
 
-        ::-webkit-scrollbar {
-                width: 0px;
-                background: transparent; /* make scrollbar transparent */
-            }
+      .modal {
+         display: none; /* Hidden by default */
+         position: fixed; /* Stay in place */
+         z-index: 1; /* Sit on top */
+         padding-top: 100px; /* Location of the box */
+         left: 0;
+         top: 0;
+         width: 100%; /* Full width */
+         height: 100%; /* Full height */
+         overflow: auto; /* Enable scroll if needed */
+         background-color: rgb(0,0,0); /* Fallback color */
+         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+       }
+
+       /* Modal Content */
+       .modal-content {
+         background-color: #fefefe;
+         margin: auto;
+         padding: 20px;
+         border: 1px solid #888;
+         width: 80%;
+       }
+
+       /* The Close Button */
+       .close {
+         color: #aaaaaa;
+         float: right;
+         font-size: 28px;
+         font-weight: bold;
+       }
+
+       .close:hover,
+       .close:focus {
+         color: #000;
+         text-decoration: none;
+         cursor: pointer;
+       }
 
     </style>
 
+    <script>
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+               document.getElementById("chosen").innerHTML =
+               this.responseText;
+            }
+        };
+        xhttp.open("GET", "JoinGroupServlet.java", true);
+        xhttp.send();
+
+    </script>
 
 
 </head>
@@ -173,93 +218,99 @@ limitations under the License.
 
     <%
 
-    int mtgid = 0;
-
-     String mtgq = "SELECT * FROM open_project_db.meetings";
-            try(ResultSet rs = conn.prepareStatement(mtgq).executeQuery()) {
-
-                if(rs.next()) {
-                    rs.last();
-                    mtgid = rs.getInt("id") + 1;
-                }
-
-            } catch (SQLException e) {
-                throw new ServletException("SQL error", e);
-
-            }
+    int mtgid = Integer.parseInt(request.getParameter("mid"));
 
 
             log("in jsp: " + Integer.toString(mtgid));
     %>
 
             <h1 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> <%=groupformalname%></h1>
-            <h2 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> Group Meetings </h2>
+            <h2 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> Schedule Meeting </h2>
 
-             <div align = "center">
-                <button id = "myBtn" class="btn btn-primary" style="height:100%;width:200px;border:none;" onclick="window.location.href = '/schedule-meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>&mid=<%=mtgid%>';"> Schedule a New Meeting </button>
-             </div>
+            <div id = "xyz" class = "w3-panel">
+                    <form id = "ghi" action = "/addtime" method =post target = "_self" value = "submit">
 
 
-             <div class = "w3-panel" style="width:100%;overflow-y:scroll;overflow-x:hidden;position:fixed;" align="center">
+                                             <select list = "days" id="day" name="day" type="text" style = "width:100%;height:35px;border-radius:1rem;padding-left:10px;color:#888888;font-size:12px" required>
+                                                     <datalist id="days">
+                                                         <option value = "monday"> Monday </option>
+                                                         <option value = "tuesday"> Tuesday </option>
+                                                         <option value = "wednesday"> Wednesday </option>
+                                                         <option value = "thursday"> Thursday </option>
+                                                         <option value = "friday"> Friday </option>
+                                                         <option value = "saturday"> Saturday </option>
+                                                         <option value = "sunday"> Sunday </option>
 
-                <%
+                                                      </datalist>
+                                              </select>
 
-                    String getmtgs =  "SELECT * from open_project_db.meetings WHERE groupid = " + groupid + " AND mtgagenda != \"0\";";
+                                                 <input type="time" id="time" name="time" min="9:00" max="18:00" required>
+                                                 <input type="hidden" id="mtgid" name="mtgid" value="<%=mtgid%>" >
+                                                 <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
+                                                 <input type="hidden" id="id" name="id" value="<%=groupid%>" >
+                                                 <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
 
-                    try(ResultSet resultset = conn.prepareStatement(getmtgs).executeQuery()) {
+                                                 <button id = "blah" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">add time</button>
+                                   </form>
 
-                         while (resultset.next()) {
+              </div>
 
-                         %>
+              <div id = "chosen">
 
-                            <form action = "/rsvp" method =post target = "_self">
+              <%
 
-                                <div style = "border: 5px solid #eae862;border-radius:8px;width:70%;height=20%" align = "center">
-                                    <h3 style="color:#eae862;font-family: 'Comfortaa', cursive;"> <%=resultset.getString("mtgagenda")%> </h3>
+                            //try to find all the messages for the group
+                            String gettimes =  "SELECT * FROM open_project_db.meetings WHERE id = \"" + mtgid + "\"\n";
 
-                                    <%
+                            try(ResultSet resultset = conn.prepareStatement(gettimes).executeQuery()) {
+
+                                while (resultset.next()) {
+                                    //print out the mtgs as buttons
+
 
                                     String[] days = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
 
                                     for (int i = 0; i < 7; i++) { //for each day, get all of the times and parse through it
-                                     String daystring = resultset.getString(days[i]);
+                                        String daystring = resultset.getString(days[i]);
 
-                                        if (!daystring.equals("0")){
+                                            if (!daystring.equals("0")){
 
-                                             String[] dts = daystring.split(",");
+                                                String[] dts = daystring.split(",");
 
-                                               for (int j = 0; j< dts.length; j++){
+                                                for (int j = 0; j< dts.length; j++){
 
-                                         %>
-                                               <input id = "tiempo" name = "tiempo" type="checkbox" value="<%=days[i]%>$<%=dts[j]%>"><label for="checkbox" style = "color:white;"> <%=days[i]%> at <%=dts[j]%></label><br>
+                                                %>
+                                                    <button class="btn btn-lg btn-primary btn-block text-uppercase"> <%=days[i]%> at <%=dts[j]%></button>
 
-                                          <%
-                                      }
-                                   }
-                               }
-                                %>
-                                <input type="hidden" id="mtgid" name="mtgid" value="<%=resultset.getInt("id")%>" >
-                                <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                                <input type="hidden" id="id" name="id" value="<%=groupid%>" >
-                                <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
-                                <button class="btn btn-primary" type = "submit" style="width=50%;"> RSVP!</button>
-                                <br><br>
+                                                       <%
+                                                }
+                                           }
+                                    }
 
 
 
-                                </div>
-
-                            </form>
+                                }
 
 
-                         <%
-                         }
+                            }
 
-
-                    }
                 %>
+              </div>
+                    <form id = "submittime" action = "/createmeeting" method=post target="_self">
 
-             </div>
+                        <input type="hidden" id="mtgid" name="mtgid" value="<%=mtgid%>" >
+                        <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
+                        <input type="hidden" id="id" name="id" value="<%=groupid%>" >
+                        <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
+
+                         <input placeholder="Brief Agenda for the meeting" id="agenda" name="agenda" type="text" autocomplete="off" style="height:50px;width:75%;border:1px solid #F7730E;border-radius: 5px;padding-left:20px;">
+                         <button class="btn btn-lg btn-primary btn-block text-uppercase" type=submit> create meeting </button>
+
+
+                    </form>
+              <div>
+
+              </div>
 
 
 
