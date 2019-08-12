@@ -67,6 +67,7 @@ limitations under the License.
     <% String userid = request.getParameter("userid");
        String groupid = request.getParameter("id");
        String thegroup = request.getParameter("group");
+       int grstyle = 0;
 
         Connection conn;
 
@@ -83,6 +84,7 @@ limitations under the License.
 
                     if (rss.next()) {
                           adminnumber = Integer.toString(rss.getInt("admin"));
+                          grstyle = rss.getInt("style");
                     }
               } catch (SQLException e) {
                     throw new ServletException("SQL error", e);
@@ -99,6 +101,14 @@ limitations under the License.
                   <div class="dropdown-menu">
                       <a class="dropdown-item" href="/grouppage.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>">Group Chat</a>
                       <a class="dropdown-item" href="/group_resources.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>">Resources</a>
+                       <%
+                                         if (grstyle == 1) {
+                                         %>
+                                              <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
+                                         <%
+                                          }
+                                         %>
+                        <a class = "dropdown-item" href = "/studyguide.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Group Study Guide </a>
 
                   </div>
             </li>
@@ -115,6 +125,7 @@ limitations under the License.
     <%
 
             String findusername = "SELECT * FROM open_project_db.users WHERE id = " + userid;
+
 
             try(ResultSet rs = conn.prepareStatement(findusername).executeQuery()) {
                 while (rs.next()) {
@@ -250,7 +261,7 @@ limitations under the License.
                      <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
                      <input type="hidden" id="groupid" name="groupid" value="<%=groupid%>" >
                      <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                     <input id="xname" name="xname" autocomplete = "off" class="form-control" placeholder="<%=gname%>">
+                     <input id="xname" name="xname" required autocomplete = "off" class="form-control" placeholder="<%=gname%>">
                      &nbsp
                      <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Change </button>
                      <hr class="my-4">

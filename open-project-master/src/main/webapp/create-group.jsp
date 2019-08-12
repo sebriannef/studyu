@@ -181,7 +181,7 @@ Connection conn;
 
                             <div class="form-label-group">
                                 <input id="description" name="description"class="form-control" maxlength="50" placeholder="Short Description (meeting time, etc)" autocomplete = "off"
-                                       autofocus>
+                                      required autofocus>
                             </div>
 
                             <br>

@@ -121,7 +121,7 @@ Connection conn;
 
     <div class="form-container">
     <br>
-            <h2 class="primary-heading" style="margin-bottom: 0px !important" align="center"> Search Results </h2>
+            <h2 class="primary-heading" style="color:#eae672;font-family: 'Comfortaa', cursive;margin-bottom: 0px !important" align="center"> Search Results </h2>
             <div style="height: 2px; background-color: white; width: 15%; margin: 25px auto;"></div>
 
             <div align = center>
@@ -131,7 +131,7 @@ Connection conn;
 
                 if (results.size() == 0) {
                 %>
-                    <h1 class="primary-heading" style="margin-bottom: 0px !important" align="center"> Sorry, we could not find any groups that match. </h1>
+                    <h1 class="primary-heading" style="color:white;margin-bottom: 0px !important" align="center"> Sorry, we could not find any groups that match. </h1>
 
                     <!-- then ask them if they want to express interest in joing a group -->
                     <br><br>
@@ -142,11 +142,11 @@ Connection conn;
                             <input type="hidden" id="number" name="number" value="<%=request.getAttribute("number")%>">
                             <input type="hidden" id="professor" name="professor" value="<%=request.getAttribute("professor")%>">
                             <input type="hidden" id="style" name="style" value="<%=request.getAttribute("style")%>">
-                            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" align="center" style="width:70%;"> Express interest in a group for this class </button>
+                            <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit" align="center" style="width:70%;color:#eae672;"> Express interest in a group for this class </button>
                         </form>
                         <br>
                        <div align="center" style = "width:70%">
-                             <p align="center"> If you would like to join a group when one of your classmates creates one, choose EXPRESS INTEREST and the group admin will be notified. </p>
+                             <p align="center" style ="color:white;"> If you would like to join a group when one of your classmates creates one, choose EXPRESS INTEREST and the group admin will be notified. </p>
                        </div>
                     <div>
                 <%
@@ -181,7 +181,7 @@ Connection conn;
                      String link = key.replaceAll("\\s","");
 
                 %>
-                    <a href="/grouppage.jsp?group=<%=link%>&id=<%=id%>&userid=<%=userid%>"> <button type="button" class="btn btn-primary" style="height:200px;width:60%;" align = "center"> <h3 style="font-size:20px;"><%=key%></h3> <br> <p style = "font-size:15px;"><%=members%> members / limit <%=sizeofgroup%> </p> <br> <p style = "font-size:12px;"> <%=desc%> </p> </button> </a>
+                    <a href="/grouppage.jsp?group=<%=link%>&id=<%=id%>&userid=<%=userid%>"> <button type="button" class="btn btn-primary" style="border-radius:10px;background-color:#0892d0;height:200px;width:60%;border:7px solid white;height:200px;width:60%;" align = "center"> <h3 style="font-size:24px;color:#eae672;"><%=key%></h3> <p style = "font-size:17px;"><%=members%> members / limit <%=sizeofgroup%> </p> <br> <p style = "font-size:14px;"> Description: <%=desc%> </p> </button> </a>
                     <br><br>
                 <%
                     }

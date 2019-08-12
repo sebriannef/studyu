@@ -142,7 +142,7 @@ limitations under the License.
                 <form action = "/updateinfo" method = "post" target="_self">
                      <input type="hidden" id="choice" name="choice" value="1" >
                      <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                     <input id="xfirst" name="xfirst" autocomplete = "off" class="form-control" placeholder="<%=firstname%>">
+                     <input id="xfirst" name="xfirst" autocomplete = "off" class="form-control" pattern=".{2,}" required placeholder="<%=firstname%>">
                      &nbsp
                      <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Change </button>
                      <hr class="my-4">
@@ -151,7 +151,7 @@ limitations under the License.
                 <form action = "/updateinfo" method = "post" target="_self">
                       <input type="hidden" id="choice" name="choice" value="2" >
                       <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                      <input id="xlast" name="xlast" autocomplete = "off" class="form-control" placeholder="<%=lastname%>">
+                      <input id="xlast" name="xlast" autocomplete = "off" pattern=".{2,}" class="form-control" required placeholder="<%=lastname%>">
                       &nbsp
                       <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Change </button>
                       <hr class="my-4">
@@ -1047,7 +1047,7 @@ limitations under the License.
                 <form action = "/updateinfo" method = "post" target="_self">
                       <input type="hidden" id="choice" name="choice" value="4" >
                       <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                      <input id="xpassword" name="xpassword" autocomplete = "off" class="form-control" placeholder="Change Password">
+                      <input id="xpassword"  required name="xpassword" autocomplete = "off" pattern=".{7,22}" class="form-control" placeholder="Change Password">
                       &nbsp
                       <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Change </button>
                       <hr class="my-4">
@@ -1056,7 +1056,7 @@ limitations under the License.
                 <form action = "/updateinfo" method = "post" target="_self">
                       <input type="hidden" id="choice" name="choice" value="5" >
                       <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                      <input type = "email" id="xemail" name="xemail" autocomplete = "off" class="form-control" placeholder="<%=email%>">
+                      <input type = "email" id="xemail" required name="xemail" autocomplete = "off" class="form-control" placeholder="<%=email%>">
                       &nbsp
                       <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Change </button>
                       <hr class="my-4">
@@ -1065,7 +1065,7 @@ limitations under the License.
                 <form action = "/updateinfo" method = "post" target="_self">
                       <input type="hidden" id="choice" name="choice" value="6" >
                       <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                      <input type = "tel" id="xphone" minlength = 12 maxlength = 12 name="xphone" autocomplete = "off" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="<%=phone%>">
+                      <input type = "tel" id="xphone" required name="xphone" autocomplete = "off" class="form-control" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="<%=phone%>">
                       &nbsp
                       <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Change </button>
                       <hr class="my-4">

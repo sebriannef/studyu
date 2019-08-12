@@ -169,10 +169,11 @@ limitations under the License.
                      <%
                         if (gstyle == 1) {
                      %>
-                          <a class = "dropdown-item" href = "/schedule_meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
+                          <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Meetings </a>
                      <%
                         }
                      %>
+                     <a class = "dropdown-item" href = "/studyguide.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Group Study Guide </a>
                   </div>
             </li>
             <li class="nav-item">

@@ -14,7 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+<%@page import="java.util.Arrays"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.HashSet"%>
+<%@page import="java.util.Map"%>
 <%@page import="javax.servlet.ServletException"%>
 <%@page import="javax.servlet.annotation.WebServlet"%>
 <%@page import="javax.servlet.http.HttpServlet"%>
@@ -61,119 +65,15 @@ limitations under the License.
                                 font-family: 'Comfortaa', cursive;
                             }
 
-
-  .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  }
-
-  /* Modal Content */
-  .modal-content {
-    background-color: #fefefe;
-    margin: auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 60%;
-  }
-
-  /* The Close Button */
-  .close {
-    color: #aaaaaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-  }
-
-  .close:hover,
-  .close:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-  }
-
-  <!-- post it notes - -->
-  <!-- got this code and modified it from http://creative-punch.net/2014/02/create-css3-post-it-note/ -->
-
-  .quote-container {
-    margin-top: 50px;
-    position: relative;
-  }
-
-  .note {
-    color: #333;
-    position: relative;
-    width: 220px;
-    height: 220px;
-    margin: 0 auto;
-    padding: 30px;
-    font-size: 25px;
-    text-align:center;
-    box-shadow: 0 10px 10px 2px rgba(0,0,0,0.3);
-  }
-
-  .yellow {
-    background: #eae672;
-    -webkit-transform: rotate(2deg);
-    -moz-transform: rotate(2deg);
-    -o-transform: rotate(2deg);
-    -ms-transform: rotate(2deg);
-    transform: rotate(2deg);
-  }
-
-  #prevBtn {
-    background-color: #bbbbbb;
-  }
-
-  /* Hide all steps by default: */
-  .tab {
-    display: none;
-  }
-
-  /* Make circles that indicate the steps of the form: */
-  .step {
-    height: 15px;
-    width: 15px;
-    margin: 0 2px;
-    background-color: #bbbbbb;
-    border: none;
-    border-radius: 50%;
-    display: inline-block;
-    opacity: 0.5;
-  }
-
-  .step.active {
-    opacity: 1;
-  }
-
-  /* Mark the steps that are finished and valid: */
-  .step.finish {
-    background-color: #4CAF50;
-  }
-
-  #regForm {
-    background-color: #ffffff;
-    margin: 100px auto;
-    font-family: Raleway;
-    padding: 40px;
-    width: 70%;
-    min-width: 300px;
-  }
-
-    * {
-      box-sizing: border-box;
-    }
-
+        ::-webkit-scrollbar {
+                width: 0px;
+                background: transparent; /* make scrollbar transparent */
+            }
 
     </style>
+
+
+
 </head>
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -235,7 +135,7 @@ limitations under the License.
 
 %>
 
-<body onload="buildUI();" style="background-color:#056691">
+<body onload="buildUI();" style="background-color:#056691;font-family: 'Comfortaa', cursive;">
     <!-- Navigation menu component -->
     <nav>
         <!-- Bootstrap nav menu template -->
@@ -245,6 +145,8 @@ limitations under the License.
                 aria-expanded="false">Menu</a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="/grouppage.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>">Group Chat</a>
+
+                    <a class = "dropdown-item" href = "/group_resources.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Resources </a>
                     <%
                    if (admin) {
                    %>
@@ -253,13 +155,7 @@ limitations under the License.
                     }
                    %>
 
-                    <%
-                       if (grstyle == 1) {
-                    %>
-                        <a class = "dropdown-item" href = "/schedule_meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
-                    <%
-                        }
-                    %>
+                <a class = "dropdown-item" href = "/studyguide.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Group Study Guide </a>
                 </div>
             </li>
             <li class="nav-item">
@@ -273,168 +169,264 @@ limitations under the License.
     </nav>
     <!-- End of navigation menu component -->
 
-            <h1 align = "center" style = "color:#eae672;"> <%=groupformalname%></h1>
-            <h2 align = "center" style = "color:#eae672;"> Group Meetings </h2>
+    <%
+
+    int mtgid = 0;
+
+     String mtgq = "SELECT * FROM open_project_db.meetings";
+            try(ResultSet rs = conn.prepareStatement(mtgq).executeQuery()) {
+
+                if(rs.next()) {
+                    rs.last();
+                    mtgid = rs.getInt("id") + 1;
+                }
+
+            } catch (SQLException e) {
+                throw new ServletException("SQL error", e);
+
+            }
+
+
+            log("in jsp: " + Integer.toString(mtgid));
+    %>
+
+            <h1 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> <%=groupformalname%></h1>
+            <h2 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> Group Meetings </h2>
+
 
              <div align = "center">
-                <button id = "myBtn" class="btn btn-primary" style="height:100%;width:200px;border:none;"> Schedule a New Meeting </button>
+                <button id = "myBtn" class="btn btn-primary" style="height:100%;width:250px;border:none;" onclick="window.location.href = '/schedule-meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>&mid=<%=mtgid%>';"> Schedule a new meeting for the week </button>
              </div>
 
-            <!-- The Modal -->
-                <div id="myModal" class="modal">
 
-                  <!-- Modal content -->
-                  <div class="modal-content">
-                    <span class="close">&times;</span>
+             <div class = "w3-panel" style="width:100%;overflow-y:scroll;overflow-x:hidden;" align="center">
 
-                    <form id="regForm" action="/#">
-                      <h1>Register:</h1>
-                      <!-- One "tab" for each step in the form: -->
-                      <div class="tab">What days are you available this week?
-                        <form id = "choosedays" action = "/#" method = "post" target="_self">
-                            <input type="checkbox" name="sunday" value="Sunday"> Sunday <br>
-                            <input type="checkbox" name="monday" value="Monday"> Monday <br>
-                            <input type="checkbox" name="tuesday" value="Tuesday"> Tuesday <br>
-                            <input type="checkbox" name="wednesday" value="Wednesday"> Wednesday <br>
-                            <input type="checkbox" name="thursday" value="Thursday"> Thursday <br>
-                            <input type="checkbox" name="friday" value="Friday"> Friday <br>
-                            <input type="checkbox" name="saturday" value="Saturday"> Saturday <br>
-                            <button type="submit" class="btn btn-primary" style="height:50px;width:15%;background-color:#0892d0"> Submit </button>
-                        </form>
+                <%
 
-                      </div>
+                    String getmtgs =  "SELECT * from open_project_db.meetings WHERE groupid = " + groupid + " AND mtgagenda != \"0\";";
 
-                      <div class="tab">When Would You Like Group Members to RSVP by?
-                        <p><input placeholder="dd" oninput="this.className = ''" name="dd"></p>
-                        <p><input placeholder="mm" oninput="this.className = ''" name="nn"></p>
-                        <p><input placeholder="yyyy" oninput="this.className = ''" name="yyyy"></p>
-                      </div>
-                      <div class="tab">Agenda for the meeting:
-                        <p><input placeholder="Username..." oninput="this.className = ''" name="uname"></p>
-                      </div>
-                      <div style="overflow:auto;">
-                        <div style="float:right;">
-                          <button type="button" id="prevBtn" onclick="nextPrev(-1)">Previous</button>
-                          <button type="button" id="nextBtn" onclick="nextPrev(1)">Next</button>
-                        </div>
-                      </div>
-                      <!-- Circles which indicates the steps of the form: -->
-                      <div style="text-align:center;margin-top:40px;">
-                        <span class="step"></span>
-                        <span class="step"></span>
-                        <span class="step"></span>
-                        <span class="step"></span>
-                      </div>
-                    </form>
+                    try(ResultSet resultset = conn.prepareStatement(getmtgs).executeQuery()) {
 
-                    <script>
-                    var currentTab = 0; // Current tab is set to be the first tab (0)
-                    showTab(currentTab); // Display the current tab
+                         while (resultset.next()) {
 
-                    function showTab(n) {
-                      // This function will display the specified tab of the form...
-                      var x = document.getElementsByClassName("tab");
-                      x[n].style.display = "block";
-                      //... and fix the Previous/Next buttons:
-                      if (n == 0) {
-                        document.getElementById("prevBtn").style.display = "none";
-                      } else {
-                        document.getElementById("prevBtn").style.display = "inline";
-                      }
-                      if (n == (x.length - 1)) {
-                        document.getElementById("nextBtn").innerHTML = "Submit";
-                      } else {
-                        document.getElementById("nextBtn").innerHTML = "Next";
-                      }
-                      //... and run a function that will display the correct step indicator:
-                      fixStepIndicator(n)
-                    }
+                            int creatr = resultset.getInt("creatorid");
+                            int specmtg = resultset.getInt("id");
+                            String confirmtime = resultset.getString("confirmed");
 
-                    function nextPrev(n) {
-                      // This function will figure out which tab to display
-                      var x = document.getElementsByClassName("tab");
-                      // Exit the function if any field in the current tab is invalid:
-                      if (n == 1 && !validateForm()) return false;
-                      // Hide the current tab:
-                      x[currentTab].style.display = "none";
-                      // Increase or decrease the current tab by 1:
-                      currentTab = currentTab + n;
-                      // if you have reached the end of the form...
-                      if (currentTab >= x.length) {
-                        // ... the form gets submitted:
-                        document.getElementById("regForm").submit();
-                        return false;
-                      }
-                      // Otherwise, display the correct tab:
-                      showTab(currentTab);
-                    }
+                            String creator = "";
 
-                    function validateForm() {
-                      // This function deals with validation of the form fields
-                      var x, y, i, valid = true;
-                      x = document.getElementsByClassName("tab");
-                      y = x[currentTab].getElementsByTagName("input");
-                      // A loop that checks every input field in the current tab:
-                      for (i = 0; i < y.length; i++) {
-                        // If a field is empty...
-                        if (y[i].value == "") {
-                          // add an "invalid" class to the field:
-                          y[i].className += " invalid";
-                          // and set the current valid status to false
-                          valid = false;
-                        }
-                      }
-                      // If the valid status is true, mark the step as finished and valid:
-                      if (valid) {
-                        document.getElementsByClassName("step")[currentTab].className += " finish";
-                      }
-                      return valid; // return the valid status
-                    }
+                            String getname =  "SELECT * from open_project_db.users WHERE id = " + creatr;
 
-                    function fixStepIndicator(n) {
-                      // This function removes the "active" class of all steps...
-                      var i, x = document.getElementsByClassName("step");
-                      for (i = 0; i < x.length; i++) {
-                        x[i].className = x[i].className.replace(" active", "");
-                      }
-                      //... and adds the "active" class on the current step:
-                      x[n].className += " active";
-                    }
-                    </script>
-
-
-                  </div>
-
-                </div>
-
-
-                 <script>
-                                // Get the modal
-                                var modal = document.getElementById("myModal");
-
-                                // Get the button that opens the modal
-                                var btn = document.getElementById("myBtn");
-
-                                // Get the <span> element that closes the modal
-                                var span = document.getElementsByClassName("close")[0];
-
-                                // When the user clicks the button, open the modal
-                                btn.onclick = function() {
-                                  modal.style.display = "block";
+                            try(ResultSet rr = conn.prepareStatement(getname).executeQuery()) {
+                                while( rr.next()){
+                                    creator = rr.getString("first_name") + " " + rr.getString("last_name");
                                 }
+                            }
+                            catch (SQLException e) {
+                                throw new ServletException("SQL error", e);
+                            }
 
-                                // When the user clicks on <span> (x), close the modal
-                                span.onclick = function() {
-                                  modal.style.display = "none";
-                                }
 
-                                // When the user clicks anywhere outside of the modal, close it
-                                window.onclick = function(event) {
-                                  if (event.target == modal) {
-                                    modal.style.display = "none";
-                                  }
-                                }
-                                </script>
+                         %>
+
+                            <form action = "/rsvp" method =post target = "_self">
+
+                                <div style = "background-color:#0892d0;border: 5px solid white;border-radius:8px;width:70%;height=20%" align = "center">
+                                    <p style="color:white;font-family: 'Comfortaa', cursive;font-size:19pt"> created by <%=creator%> </p>
+                                    <p style="color:#eae672;font-family: 'Comfortaa', cursive;font-size:22pt"> Agenda: <%=resultset.getString("mtgagenda")%> </p>
+
+                                  <%
+
+                                        String[] days = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+                                        HashMap<String, String> options = new HashMap<String, String>();
+                                        ArrayList<String> timestodisplay = new ArrayList<String>();
+                                        HashSet<String> people = new HashSet<String>();
+                                        HashMap<String, HashSet<String>> usertimes = new HashMap<String, HashSet<String>>();
+
+
+                                        for (int b = 0; b < 7; b++) { //get all of the people that have rsvped for the meeting
+                                            String string = resultset.getString(days[b]);
+
+                                             if (!string.equals("0")){ //if someone is available on that day
+
+                                                   String[] dts1 = string.split(","); //split at all the different repsonses for that day
+                                                   for (int c = 0; c < dts1.length; c++) {
+                                                        people.add(dts1[c].split("\\@")[0]);
+                                                   }
+
+                                              }
+
+
+                                        }
+
+
+                                        for (int i = 0; i < 7; i++) {
+                                           //for each day, get all of the times and parse through it
+                                           String daystring = resultset.getString(days[i]);
+                                           //HashMap<String, HashSet<String>> usertimes = new HashMap<String, HashSet<String>>();
+
+                                            if (!daystring.equals("0")){ //if someone is available on that day
+
+                                                 String[] dts = daystring.split(","); //split at all the different repsonses for that day
+
+                                                    HashSet<String> nodupes = new HashSet<String>(); //put it in a hashset to remove the dupes
+
+                                                    //once you get each entry, you need to extract the time and then add those to the hashset
+                                                    for (int m = 0; m < dts.length; m++) {
+
+                                                        String[] temp = dts[m].split("\\@");
+
+                                                        //check to see if the user is already in the hashmap
+                                                        //if they are, then you need to get their set of times for that day and add this time
+                                                        //if they are not, then you need to create a new hashset with that time and add that element to the hashmap
+
+                                                        if (usertimes.containsKey(temp[0])) {
+                                                            usertimes.get(temp[0]).add(temp[1]);
+                                                        }
+                                                        else {
+                                                            HashSet<String> ut = new HashSet<String>();
+                                                            ut.add(temp[1]);
+                                                            usertimes.put(temp[0], ut);
+                                                        }
+                                                        nodupes.add(temp[1]); //keep track of all the unique times among all users
+                                                    }
+
+                                                 String times = ""; //compile all the unique times into one string
+
+                                                 for (String d: nodupes) {
+                                                    int total = 0;
+                                                    for (Map.Entry member : usertimes.entrySet()) {
+                                                          @SuppressWarnings("unchecked")
+                                                          HashSet<String> vals = (HashSet<String>)member.getValue();
+                                                          if (vals.contains(d.toString())){
+                                                            total++;
+                                                          }
+
+                                                     }
+                                                     //now check to see if all the users that have rsvped can make that time
+                                                     if (total== people.size()){
+                                                        timestodisplay.add(days[i] + "@" + d);
+                                                     }
+
+
+                                                  } //end of inner for
+
+
+
+
+                                              } //end of if
+
+                                          } //end of for 7
+
+                                          if (timestodisplay.size() == 0) {
+
+                                                %>
+
+                                                    <h3 style="color:white;font-family: 'Comfortaa', cursive;"> No one has time in common. Try next week. </h3>
+
+
+                                                <%
+
+
+                                          }
+
+
+                                        else {
+
+                                        if (!confirmtime.equals("0")) {
+                                            String[] split2 = confirmtime.split(" ");
+
+                                           %>
+                                               <h3 style="color:#eae672;font-family: 'Comfortaa', cursive;font-weight:bold;"> Confirmed for <%=split2[0]%> <%=split2[2]%> at <%=split2[1]%> </h3>
+                                           <%
+                                        }
+                                        else {
+
+
+                                             for (String entry : timestodisplay) {
+
+
+                                                String[] tims = entry.split("@");
+                                                 log("tims:" + Integer.toString(tims.length));
+                                                //for (int k = 0; k < tims.length; k++) {
+
+                                                 %>
+                                                      <input id = "tiempo" name = "tiempo" type="checkbox" value="<%=tims[0]%>$<%=tims[1]%>"><label for="checkbox" style = "color:white;"> <%=tims[0]%> at <%=tims[1]%></label><br>
+
+                                                  <%
+                                                 //} //end of inner for
+
+                                                }//end of outter for
+
+
+
+
+
+                                        %>
+                                    <input type="hidden" id="mtgid" name="mtgid" value="<%=resultset.getInt("id")%>" >
+                                    <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
+                                    <input type="hidden" id="id" name="id" value="<%=groupid%>" >
+                                    <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
+                                      <%
+
+
+                                    if (Integer.parseInt(userid) != creatr) {
+
+                                            if (people.contains(userid)){
+                                        %>
+                                            <h3 style="color:#eae672;font-family: 'Comfortaa', cursive;"> You already RSVPed for this meeting </h3>
+
+                                        <%
+                                            }
+
+                                            else {
+
+                                         %>
+
+                                            <button class="btn btn-primary" type = "submit" style="width=50%;background-color:#eae672"> RSVP!</button>
+
+                                        <%
+                                        }
+                                      }
+
+                                     }
+
+
+                                      if (Integer.parseInt(userid) == creatr) {
+                                     %>
+                                        <a href = "/meetingadmin.jsp?creatorid=<%=creatr%>&groupid=<%=groupid%>&mtgid=<%=specmtg%>"><button class="btn btn-primary" type = "button" style="width=50%;background-color:#eae672"> Meeting Settings </button></a>
+
+                                     <%
+
+                                     }
+
+
+                                    %>
+                                    <br><br>
+
+
+
+                                </div>
+
+                            </form>
+
+                            <br><br>
+
+
+                         <%
+                         }
+                         } //end of while
+
+
+                    } //end of try
+
+                     catch (SQLException e) {
+                          throw new ServletException("SQL error", e);
+
+                     }
+                %>
+
+             </div>
 
 
 
