@@ -85,9 +85,9 @@ public class AddTimeServlet extends HttpServlet {
                 String update = "";
                 if (rs1.next()) {
                     if (rs1.getString(day).equals("0")) { //havent added time for that day
-                        update = "UPDATE open_project_db.meetings SET " + day + " = \"" + (time) + "\" WHERE (id = " + mtgid + ");";
+                        update = "UPDATE open_project_db.meetings SET " + day + " = \"" + (creatorid + "\\@" + time) + "\" WHERE (id = " + mtgid + ");";
                     } else {
-                        update = "UPDATE open_project_db.meetings SET " + day + " = \"" + (rs1.getString(day) + "," + time) + "\" WHERE (id = " + mtgid + ");";
+                        update = "UPDATE open_project_db.meetings SET " + day + " = \"" + (rs1.getString(day) + "," + creatorid + "\\@" + time) + "\" WHERE (id = " + mtgid + ");";
                     }
 
                     PreparedStatement statement = null;

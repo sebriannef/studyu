@@ -199,10 +199,11 @@ limitations under the License.
                     <%
                        if (grstyle == 1) {
                     %>
-                        <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
+                        <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Meetings </a>
                     <%
                         }
                     %>
+                    <a class = "dropdown-item" href = "/studyguide.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Group Study Guide </a>
                 </div>
             </li>
             <li class="nav-item">
@@ -226,12 +227,13 @@ limitations under the License.
 
             <h1 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> <%=groupformalname%></h1>
             <h2 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> Schedule Meeting </h2>
+            <p align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> Choose all the possible days/times you would be available and then your classmates will be able to choose which of those days work for them. </p>
 
             <div id = "xyz" class = "w3-panel">
                     <form id = "ghi" action = "/addtime" method =post target = "_self" value = "submit">
 
 
-                                             <select list = "days" id="day" name="day" type="text" style = "width:100%;height:35px;border-radius:1rem;padding-left:10px;color:#888888;font-size:12px" required>
+                                             <select list = "days" id="day" name="day" type="text" style = "width:100%;height:35px;border-radius:1rem;padding-left:10px;color:#888888;font-size:20px" required>
                                                      <datalist id="days">
                                                          <option value = "monday"> Monday </option>
                                                          <option value = "tuesday"> Tuesday </option>
@@ -243,12 +245,17 @@ limitations under the License.
 
                                                       </datalist>
                                               </select>
+                                              <br><br>
+                                                <div align ="center">
+                                                    <input type="time" id="time" name="time" min="0:00" max="23:59" align = "center" style = "font-size:22pt;border-radius:8px;" required>
+                                                </div>
 
-                                                 <input type="time" id="time" name="time" min="9:00" max="18:00" required>
                                                  <input type="hidden" id="mtgid" name="mtgid" value="<%=mtgid%>" >
                                                  <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
                                                  <input type="hidden" id="id" name="id" value="<%=groupid%>" >
                                                  <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
+
+                                                 <br><br>
 
                                                  <button id = "blah" class="btn btn-lg btn-primary btn-block text-uppercase" type="submit">add time</button>
                                    </form>
@@ -279,8 +286,10 @@ limitations under the License.
 
                                                 for (int j = 0; j< dts.length; j++){
 
+                                                String[] parse = dts[j].split("\\@");
+
                                                 %>
-                                                    <button class="btn btn-lg btn-primary btn-block text-uppercase"> <%=days[i]%> at <%=dts[j]%></button>
+                                                    <h3 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> <%=days[i]%> at <%=parse[1]%></h3>
 
                                                        <%
                                                 }
@@ -295,6 +304,7 @@ limitations under the License.
                             }
 
                 %>
+                <br><br>
               </div>
                     <form id = "submittime" action = "/createmeeting" method=post target="_self">
 
@@ -303,9 +313,12 @@ limitations under the License.
                         <input type="hidden" id="id" name="id" value="<%=groupid%>" >
                         <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
 
-                         <input placeholder="Brief Agenda for the meeting" id="agenda" name="agenda" type="text" autocomplete="off" style="height:50px;width:75%;border:1px solid #F7730E;border-radius: 5px;padding-left:20px;">
-                         <button class="btn btn-lg btn-primary btn-block text-uppercase" type=submit> create meeting </button>
+                        <div align = "center">
+                             <input placeholder="Brief Agenda for the meeting" id="agenda" name="agenda" type="text" autocomplete="off" style="height:50px;width:75%;border:1px solid #F7730E;border-radius: 5px;padding-left:20px;">
 
+                             <br><br>
+                             <button class="btn btn-lg btn-primary btn-block text-uppercase" style = "width:80%;background-color:#eae672" type=submit> create meeting </button>
+                        </div>
 
                     </form>
               <div>

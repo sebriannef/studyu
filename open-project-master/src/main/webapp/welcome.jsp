@@ -64,7 +64,10 @@ limitations under the License.
 
 <body style="background-color:#056691">
 
-    <% String userid = request.getParameter("userid"); %>
+    <% String userid = request.getParameter("userid");
+
+
+     %>
 <!-- Navigation menu component -->
     <nav>
         <!-- Bootstrap nav menu template -->
@@ -122,6 +125,13 @@ limitations under the License.
                     <%
                    }
                 }
+                else {
+
+                %>
+                    <jsp:forward page="/oops"/>
+
+                    <%
+                }
              } catch (SQLException e) {
                throw new ServletException("SQL error", e);
 
@@ -154,7 +164,7 @@ limitations under the License.
                 <form align =center action = "/notinterested" method = "post" target="_self">
                     <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
                     <input type="hidden" id="id" name="id" value="<%=rs.getString("id")%>" >
-                    <p> <%=rs.getString("department")%> <%=rs.getInt("courseno")%> with Professor <%=Character.toUpperCase(rs.getString("professor").charAt(0))%><%=rs.getString("professor").substring(1)%>  </p>
+                    <p style = "color:#eae672;"> <%=rs.getString("department")%> <%=rs.getInt("courseno")%> with Professor <%=Character.toUpperCase(rs.getString("professor").charAt(0))%><%=rs.getString("professor").substring(1)%>  </p>
                     <button class="btn btn-lg btn-primary btn-block text-uppercase" type = "submit" style="margin:auto;font-size:10px;height:1%;width:6%;background-color:red;"> remove </button>
                     <br>
 

@@ -14,7 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 -->
 
+<%@page import="java.util.Arrays"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.HashSet"%>
+<%@page import="java.util.Map"%>
 <%@page import="javax.servlet.ServletException"%>
 <%@page import="javax.servlet.annotation.WebServlet"%>
 <%@page import="javax.servlet.http.HttpServlet"%>
@@ -151,13 +155,7 @@ limitations under the License.
                     }
                    %>
 
-                    <%
-                       if (grstyle == 1) {
-                    %>
-                        <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
-                    <%
-                        }
-                    %>
+                <a class = "dropdown-item" href = "/studyguide.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Group Study Guide </a>
                 </div>
             </li>
             <li class="nav-item">
@@ -195,12 +193,13 @@ limitations under the License.
             <h1 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> <%=groupformalname%></h1>
             <h2 align = "center" style = "color:#eae672;font-family: 'Comfortaa', cursive;"> Group Meetings </h2>
 
+
              <div align = "center">
-                <button id = "myBtn" class="btn btn-primary" style="height:100%;width:200px;border:none;" onclick="window.location.href = '/schedule-meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>&mid=<%=mtgid%>';"> Schedule a New Meeting </button>
+                <button id = "myBtn" class="btn btn-primary" style="height:100%;width:250px;border:none;" onclick="window.location.href = '/schedule-meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>&mid=<%=mtgid%>';"> Schedule a new meeting for the week </button>
              </div>
 
 
-             <div class = "w3-panel" style="width:100%;overflow-y:scroll;overflow-x:hidden;position:fixed;" align="center">
+             <div class = "w3-panel" style="width:100%;overflow-y:scroll;overflow-x:hidden;" align="center">
 
                 <%
 
@@ -210,40 +209,200 @@ limitations under the License.
 
                          while (resultset.next()) {
 
+                            int creatr = resultset.getInt("creatorid");
+                            int specmtg = resultset.getInt("id");
+                            String confirmtime = resultset.getString("confirmed");
+
+                            String creator = "";
+
+                            String getname =  "SELECT * from open_project_db.users WHERE id = " + creatr;
+
+                            try(ResultSet rr = conn.prepareStatement(getname).executeQuery()) {
+                                while( rr.next()){
+                                    creator = rr.getString("first_name") + " " + rr.getString("last_name");
+                                }
+                            }
+                            catch (SQLException e) {
+                                throw new ServletException("SQL error", e);
+                            }
+
+
                          %>
 
                             <form action = "/rsvp" method =post target = "_self">
 
-                                <div style = "border: 5px solid #eae862;border-radius:8px;width:70%;height=20%" align = "center">
-                                    <h3 style="color:#eae862;font-family: 'Comfortaa', cursive;"> <%=resultset.getString("mtgagenda")%> </h3>
+                                <div style = "background-color:#0892d0;border: 5px solid white;border-radius:8px;width:70%;height=20%" align = "center">
+                                    <p style="color:white;font-family: 'Comfortaa', cursive;font-size:19pt"> created by <%=creator%> </p>
+                                    <p style="color:#eae672;font-family: 'Comfortaa', cursive;font-size:22pt"> Agenda: <%=resultset.getString("mtgagenda")%> </p>
 
-                                    <%
+                                  <%
 
-                                    String[] days = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+                                        String[] days = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+                                        HashMap<String, String> options = new HashMap<String, String>();
+                                        ArrayList<String> timestodisplay = new ArrayList<String>();
+                                        HashSet<String> people = new HashSet<String>();
+                                        HashMap<String, HashSet<String>> usertimes = new HashMap<String, HashSet<String>>();
 
-                                    for (int i = 0; i < 7; i++) { //for each day, get all of the times and parse through it
-                                     String daystring = resultset.getString(days[i]);
 
-                                        if (!daystring.equals("0")){
+                                        for (int b = 0; b < 7; b++) { //get all of the people that have rsvped for the meeting
+                                            String string = resultset.getString(days[b]);
 
-                                             String[] dts = daystring.split(",");
+                                             if (!string.equals("0")){ //if someone is available on that day
 
-                                               for (int j = 0; j< dts.length; j++){
+                                                   String[] dts1 = string.split(","); //split at all the different repsonses for that day
+                                                   for (int c = 0; c < dts1.length; c++) {
+                                                        people.add(dts1[c].split("\\@")[0]);
+                                                   }
+
+                                              }
+
+
+                                        }
+
+
+                                        for (int i = 0; i < 7; i++) {
+                                           //for each day, get all of the times and parse through it
+                                           String daystring = resultset.getString(days[i]);
+                                           //HashMap<String, HashSet<String>> usertimes = new HashMap<String, HashSet<String>>();
+
+                                            if (!daystring.equals("0")){ //if someone is available on that day
+
+                                                 String[] dts = daystring.split(","); //split at all the different repsonses for that day
+
+                                                    HashSet<String> nodupes = new HashSet<String>(); //put it in a hashset to remove the dupes
+
+                                                    //once you get each entry, you need to extract the time and then add those to the hashset
+                                                    for (int m = 0; m < dts.length; m++) {
+
+                                                        String[] temp = dts[m].split("\\@");
+
+                                                        //check to see if the user is already in the hashmap
+                                                        //if they are, then you need to get their set of times for that day and add this time
+                                                        //if they are not, then you need to create a new hashset with that time and add that element to the hashmap
+
+                                                        if (usertimes.containsKey(temp[0])) {
+                                                            usertimes.get(temp[0]).add(temp[1]);
+                                                        }
+                                                        else {
+                                                            HashSet<String> ut = new HashSet<String>();
+                                                            ut.add(temp[1]);
+                                                            usertimes.put(temp[0], ut);
+                                                        }
+                                                        nodupes.add(temp[1]); //keep track of all the unique times among all users
+                                                    }
+
+                                                 String times = ""; //compile all the unique times into one string
+
+                                                 for (String d: nodupes) {
+                                                    int total = 0;
+                                                    for (Map.Entry member : usertimes.entrySet()) {
+                                                          @SuppressWarnings("unchecked")
+                                                          HashSet<String> vals = (HashSet<String>)member.getValue();
+                                                          if (vals.contains(d.toString())){
+                                                            total++;
+                                                          }
+
+                                                     }
+                                                     //now check to see if all the users that have rsvped can make that time
+                                                     if (total== people.size()){
+                                                        timestodisplay.add(days[i] + "@" + d);
+                                                     }
+
+
+                                                  } //end of inner for
+
+
+
+
+                                              } //end of if
+
+                                          } //end of for 7
+
+                                          if (timestodisplay.size() == 0) {
+
+                                                %>
+
+                                                    <h3 style="color:white;font-family: 'Comfortaa', cursive;"> No one has time in common. Try next week. </h3>
+
+
+                                                <%
+
+
+                                          }
+
+
+                                        else {
+
+                                        if (!confirmtime.equals("0")) {
+                                            String[] split2 = confirmtime.split(" ");
+
+                                           %>
+                                               <h3 style="color:#eae672;font-family: 'Comfortaa', cursive;font-weight:bold;"> Confirmed for <%=split2[0]%> <%=split2[2]%> at <%=split2[1]%> </h3>
+                                           <%
+                                        }
+                                        else {
+
+
+                                             for (String entry : timestodisplay) {
+
+
+                                                String[] tims = entry.split("@");
+                                                 log("tims:" + Integer.toString(tims.length));
+                                                //for (int k = 0; k < tims.length; k++) {
+
+                                                 %>
+                                                      <input id = "tiempo" name = "tiempo" type="checkbox" value="<%=tims[0]%>$<%=tims[1]%>"><label for="checkbox" style = "color:white;"> <%=tims[0]%> at <%=tims[1]%></label><br>
+
+                                                  <%
+                                                 //} //end of inner for
+
+                                                }//end of outter for
+
+
+
+
+
+                                        %>
+                                    <input type="hidden" id="mtgid" name="mtgid" value="<%=resultset.getInt("id")%>" >
+                                    <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
+                                    <input type="hidden" id="id" name="id" value="<%=groupid%>" >
+                                    <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
+                                      <%
+
+
+                                    if (Integer.parseInt(userid) != creatr) {
+
+                                            if (people.contains(userid)){
+                                        %>
+                                            <h3 style="color:#eae672;font-family: 'Comfortaa', cursive;"> You already RSVPed for this meeting </h3>
+
+                                        <%
+                                            }
+
+                                            else {
 
                                          %>
-                                               <input id = "tiempo" name = "tiempo" type="checkbox" value="<%=days[i]%>$<%=dts[j]%>"><label for="checkbox" style = "color:white;"> <%=days[i]%> at <%=dts[j]%></label><br>
 
-                                          <%
+                                            <button class="btn btn-primary" type = "submit" style="width=50%;background-color:#eae672"> RSVP!</button>
+
+                                        <%
+                                        }
                                       }
-                                   }
-                               }
-                                %>
-                                <input type="hidden" id="mtgid" name="mtgid" value="<%=resultset.getInt("id")%>" >
-                                <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                                <input type="hidden" id="id" name="id" value="<%=groupid%>" >
-                                <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
-                                <button class="btn btn-primary" type = "submit" style="width=50%;"> RSVP!</button>
-                                <br><br>
+
+                                     }
+
+
+                                      if (Integer.parseInt(userid) == creatr) {
+                                     %>
+                                        <a href = "/meetingadmin.jsp?creatorid=<%=creatr%>&groupid=<%=groupid%>&mtgid=<%=specmtg%>"><button class="btn btn-primary" type = "button" style="width=50%;background-color:#eae672"> Meeting Settings </button></a>
+
+                                     <%
+
+                                     }
+
+
+                                    %>
+                                    <br><br>
 
 
 
@@ -251,12 +410,20 @@ limitations under the License.
 
                             </form>
 
+                            <br><br>
+
 
                          <%
                          }
+                         } //end of while
 
 
-                    }
+                    } //end of try
+
+                     catch (SQLException e) {
+                          throw new ServletException("SQL error", e);
+
+                     }
                 %>
 
              </div>

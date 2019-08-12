@@ -355,10 +355,11 @@ limitations under the License.
                    <%
                    if (grstyle == 1) {
                    %>
-                        <a class = "dropdown-item" href = "/meetings.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
+                        <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Meetings </a>
                    <%
                     }
                    %>
+                   <a class = "dropdown-item" href = "/studyguide.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Group Study Guide </a>
                </div>
             </li>
             <li class="nav-item">
@@ -451,7 +452,7 @@ limitations under the License.
                                                             if(findingthename.next()) {
 
                                                             %>
-                                                                <h3 align = "left"> <%=findingthename.getString("first_name")%> <%=findingthename.getString("last_name")%> </h3>
+                                                                <h3 align = "left"> <%=Character.toUpperCase(findingthename.getString("first_name").charAt(0))%><%=findingthename.getString("first_name").substring(1).toLowerCase()%> <%=Character.toUpperCase(findingthename.getString("last_name").charAt(0))%><%=findingthename.getString("last_name").substring(1).toLowerCase()%> </h3>
                                                                 <br>
 
                                                             <%
@@ -566,7 +567,7 @@ limitations under the License.
                                         try(ResultSet xyz = conn.prepareStatement(findsendername).executeQuery()) {
 
                                              if (xyz.next()) {
-                                                    sendername = xyz.getString("first_name") + " " + xyz.getString("last_name");
+                                                    sendername = Character.toUpperCase(xyz.getString("first_name").charAt(0))+xyz.getString("first_name").substring(1).toLowerCase()+" "+Character.toUpperCase(xyz.getString("last_name").charAt(0))+xyz.getString("last_name").substring(1).toLowerCase();
                                              }
 
                                          } catch (SQLException e) {

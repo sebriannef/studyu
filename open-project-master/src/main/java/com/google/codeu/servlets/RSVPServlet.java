@@ -28,6 +28,12 @@ import java.sql.*;
 @WebServlet("/rsvp")
 public class RSVPServlet extends HttpServlet {
 
+    /**
+     * what this servlet should do is essentially add the times of the user to
+     * the database, ????and then check each time to see if everyone that has rsvped can make it
+     * ???if not everyone can make it on any of the chosen days, then the admin should be notified to wait for another week to have the meeting
+     */
+
     Connection conn;
 
     @Override
@@ -43,7 +49,7 @@ public class RSVPServlet extends HttpServlet {
 
         String groupid = request.getParameter("id");
 
-        String creatorid = request.getParameter("userid");
+        String userid = request.getParameter("userid");
 
         String group = request.getParameter("group");
 
@@ -64,8 +70,10 @@ public class RSVPServlet extends HttpServlet {
                   log(s[0]);
                   log(s[1]);
 
-                   String pvsr = "UPDATE open_project_db.meetings SET " + s[0] + " = \"" + (resultSet.getString(s[0]) + "," + s[1]) + "\"  WHERE (id = " + mtgid + ");";
-                    log("HELLO FROM THE OTHER SIIIIIIIIIIIIIDDDDDDDDDDDDDDEEEEEEEEEEEE");
+                //  String[] ss = s[1].split("\\@");
+
+                   String pvsr = "UPDATE open_project_db.meetings SET " + s[0] + " = \"" + (resultSet.getString(s[0]) + "," + userid + "\\@" + s[1]) + "\"  WHERE (id = " + mtgid + ");";
+
                     PreparedStatement statement = null;
                     try {
                         statement = this.conn.prepareStatement(pvsr);
@@ -85,7 +93,7 @@ public class RSVPServlet extends HttpServlet {
 
 
         //response.sendRedirect("/schedule-meeting.jsp?&userid=" + creatorid+ "&id=" + groupid +"&group=" + group);
-        request.getServletContext().getRequestDispatcher("/meeting.jsp?userid=" + creatorid+ "&id=" + groupid +"&group=" + group).forward(request, response);
+        request.getServletContext().getRequestDispatcher("/meeting.jsp?userid=" + userid+ "&id=" + groupid +"&group=" + group).forward(request, response);
 
 
 

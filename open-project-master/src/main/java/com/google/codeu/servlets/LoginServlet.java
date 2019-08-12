@@ -67,6 +67,12 @@ public class LoginServlet extends HttpServlet {
     try (ResultSet finder = conn.prepareStatement(find).executeQuery()) {
       if (finder.next()) {
         //out.println("that user already exists");
+
+        if (finder.getString("loggedin").equals("1") && !finder.getString("ip").equals(request.getRemoteAddr())){
+          resp.sendRedirect("/login.html");
+        }
+
+
         p = new EncryptPassword(finder.getString("password"), new BigInteger(finder.getString("n")), new BigInteger(finder.getString("e")), new BigInteger(finder.getString("d")), finder.getInt("s"));
 
         //remove salt
@@ -83,6 +89,7 @@ public class LoginServlet extends HttpServlet {
         if (dcry.equals(mpassword)) { //user authentication
           //change the user's status to logged in
           String ip = request.getRemoteAddr();
+
          // String loggedin = "UPDATE open_project_db.users SET loggedin = \"" + 1 + "\" WHERE (id = \"" + finder.getInt("id") + "\");\n";
           String loggedin = "UPDATE open_project_db.users SET loggedin = " + 1 + ", ip = \"" + ip + "\" WHERE (id = \"" + finder.getInt("id") + "\");\n";
 

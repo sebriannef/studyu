@@ -13,7 +13,15 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 -->
+
+<%@ page import="java.util.*" %>
+<%@ page import="com.google.gson.Gson"%>
+<%@ page import="com.google.gson.JsonObject"%>
+<%@page import="java.util.Arrays"%>
+<%@page import="java.util.HashMap"%>
 <%@page import="java.util.ArrayList"%>
+<%@page import="java.util.HashSet"%>
+<%@page import="java.util.Map"%>
 <%@page import="javax.servlet.ServletException"%>
 <%@page import="javax.servlet.annotation.WebServlet"%>
 <%@page import="javax.servlet.http.HttpServlet"%>
@@ -28,6 +36,8 @@ limitations under the License.
 
 <!DOCTYPE html>
 <html lang="en">
+
+
 
 <head>
     <meta charset="UTF-8">
@@ -62,9 +72,11 @@ limitations under the License.
 
 <body onload="addLoginOrLogoutLinkToNavigation();" style="background-color:#056691">
 
-    <% String userid = request.getParameter("userid");
+    <% String userid = request.getParameter("creatorid");
        String groupid = request.getParameter("groupid");
        String thegroup = request.getParameter("thegroup");
+       String mtgid = request.getParameter("mtgid");
+
 
         Connection conn;
 
@@ -168,7 +180,7 @@ limitations under the License.
                      <%
                         if (gstyle == 1) {
                      %>
-                          <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Meetings </a>
+                          <a class = "dropdown-item" href = "/meeting.jsp?group=<%=thegroup%>&id=<%=groupid%>&userid=<%=userid%>"> Schedule Meeting </a>
                      <%
                         }
                      %>
@@ -185,79 +197,114 @@ limitations under the License.
     </nav>
     <!-- End of navigation menu component -->
     <br>
-    <h1 align="center" style="color:#eae672;"> Group Settings </h1>
+    <h1 align="center" style="color:#eae672;"> Manage Your Meeting </h1>
     <br><br>
+     <h2 align="center" style="color:white;"> Confirm the Time </h2>
+        <br>
 
     <div class="form-container" align="center" style="height:50%;">
 
-            <div align ="center" style="width:60%;height:60%;">
-                <h3 align="center" style="color:#eae672;"> Change Maximum Size </h3>
-                <form action = "/updateginfo" method = "post" target="_self">
-                      <input type="hidden" id="choice" name="choice" value="2" >
-                      <input type="hidden" id="groupid" name="groupid" value="<%=groupid%>" >
-                      <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                      <input type="hidden" id="thegroup" name="thegroup" value="<%=thegroup%>" >
-                      <input id="xsize" name="xsize" type="number" min=<%=gsize%> max ="6" autocomplete = "off" class="form-control" placeholder="<%=gmax%>">
-                      &nbsp
-                      <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Change </button>
-                      <hr class="my-4">
-                </form>
-
-                <h3 align="center" style="color:#eae672;"> Change Group Description </h3>
-                <form action = "/updateginfo" method = "post" target="_self">
-                      <input type="hidden" id="choice" name="choice" value="4" >
-                      <input type="hidden" id="groupid" name="groupid" value="<%=groupid%>" >
-                      <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                      <input type="hidden" id="thegroup" name="thegroup" value="<%=thegroup%>" >
-
-                      <%
-                        if (gdescription == null) {
-
-                      %>
-
-                        <input id="xdes" name="xdes" autocomplete = "off" class="form-control" placeholder="Enter description">
+            <%
 
 
-                      <%
+                HashMap<String, Integer> usertimes = new HashMap<String, Integer>();
+                String findtimes = "SELECT * FROM open_project_db.meetings WHERE id = "+ mtgid;
+                String[] days = {"sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"};
+
+                try(ResultSet resultset = conn.prepareStatement(findtimes).executeQuery()) {
+
+                    while (resultset.next()) {
+                        log("\n\n\n\n result set has next");
+                        for (int i = 0; i < 7; i++) {
+                            //for each day, get all of the times and parse through it
+                            String daystring = resultset.getString(days[i]);
+
+                            if (!daystring.equals("0")){ //if someone is available on that day
+
+                                 String[] dts = daystring.split(","); //split at all the different repsonses for that day
+
+                                  for (int m = 0; m < dts.length; m++) {
+
+                                        String[] dtssplit = dts[m].split("\\@");
+
+                                        String formattedtime = dtssplit[0] + " at " + dtssplit[1];
+                                        log ("\n\n\n" + dtssplit[1]);
+
+                                       if (!usertimes.keySet().contains(days[i] + " " + dtssplit[1])){
+                                            log("\n\n\n new");
+                                            usertimes.put(days[i] + " " + dtssplit[1], 1);
+
+                                       }
+
+                                       else {
+                                            log("\n\n\n update");
+                                            Integer vote = usertimes.get(days[i] + " " + dtssplit[1]) + 1;
+                                            usertimes.replace(days[i] + " " + dtssplit[1], vote);
+                                       }
+
+                                    }
+
+
+                              }
+
 
                          }
 
-                         else {
+                    } //end of while result set.next
+
+                    log(Integer.toString(usertimes.size()));
+
+                    %>
+
+                        <form action = "/confirmmtg" method = "post" target="_self">
+
+                        <div>
+                    <%
+
+                            for (Map.Entry entry : usertimes.entrySet()){
+
+                                    String[] extractTime = entry.getKey().toString().split(" ");
+
+
+                                    %>
+                                         <input type="radio" name="choice" value="<%=entry.getKey()%>" required> &nbsp <label for="radio" style = "color:#eae672;font-size:20pt;font-family: 'Comfortaa', cursive;">   <%=entry.getValue()%> votes for <%=extractTime[0]%> at <%=extractTime[1]%></label><br>
+                                     <%
+
+
+                             }
+
 
                       %>
-                       <input id="xdes" name="xdes" autocomplete = "off" class="form-control" placeholder="<%=gdescription%>">
+
+                        </div>
+
+                         <button class="btn btn-primary" type = "submit" style="width:500px;font-size:22pt;background-color:#eae672"> Confirm meeting </button>
+                            <input type="hidden" id="mtgid" name="mtgid" value="<%=mtgid%>" >
+                            <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
+                            <input type="hidden" id="id" name="id" value="<%=groupid%>" >
+                            <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
+                        </form>
+
+                        <form action = "/deletemtg" method = "post" target="_self">
+                            <input type="hidden" id="mtgid" name="mtgid" value="<%=mtgid%>" >
+                            <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
+                            <input type="hidden" id="id" name="id" value="<%=groupid%>" >
+                            <input type="hidden" id="group" name="group" value="<%=thegroup%>" >
+                            <button class="btn btn-primary" type = "submit" style="width:500px;font-size:22pt;background-color:red"> Delete meeting </button>
+                        </form>
 
                       <%
-                        }
-                      %>
 
 
-                      &nbsp
-                      <button class="btn btn-lg btn-primary btn-block text-uppercase" type="submit"> Change </button>
-                      <hr class="my-4">
-                </form>
+              }
+              catch (SQLException e) {
+                                        throw new ServletException("SQL error", e);
 
-                <%
-                    if (gadmin != Integer.parseInt(userid)){
-                %>
-                <form action = "/leavegroup" method = "post" target="_self">
-                       <input type="hidden" id="userid" name="userid" value="<%=userid%>" >
-                       <input type="hidden" id="groupid" name="groupid" value="<%=groupid%>" >
-                       <input type="hidden" id="groupsize" name="groupsize" value="<%=gsize%>" >
-                       <!--<input type="hidden" id="thegroup" name="thegroup" value="<%=thegroup%>" >-->
-                       <button class="btn btn-lg btn-primary btn-block text-uppercase" style="background-color:red;" type="submit"> Leave Group </button>
+               }
 
-                </form>
+              %>
 
-                <%
-                    }
-                %>
-                <br>
-
-
-
-            </div>
-     </div>
+    </div>
 
 
 
