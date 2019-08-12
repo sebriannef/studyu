@@ -39,7 +39,9 @@ limitations under the License.
 
     <!-- Font Awesome Icons link -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+
     <link rel="shortcut icon" type = "image/png" href = "img/favicon.png">
+
 
     <script src="/js/navigation-loader.js"></script>
     <script src="/js/groups-page-loader.js"></script>
@@ -70,7 +72,11 @@ limitations under the License.
 
                     try (ResultSet rs = conn.prepareStatement(loggedin).executeQuery()){
                           if (rs.next()){
+
                              if (rs.getString("loggedin").equals("0") || !(rs.getString("ip").equals(request.getRemoteAddr()))) {
+
+                             if (rs.getString("loggedin").equals("0")) {
+
                                %>
                                    <jsp:forward page="/oops"/>
                                <%
